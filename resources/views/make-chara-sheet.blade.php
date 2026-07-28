@@ -8,6 +8,11 @@
 </head>
 
 <body>
+	<div id="app">
+		<male-chara-sheet></male-chara-sheet>
+	</div>
+
+	@vite(['resources/js/app.js'])
 	<select v-model="race" @change="applyRaceBonus">
 		<option value="human">只人</option>
 		<option value="dwarf">鉱人</option>
