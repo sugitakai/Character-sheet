@@ -1,9 +1,9 @@
 import './bootstrap';
 import { createApp } from 'vue';
-import MaleCharaSheet from './components/MaleCharaSheet.vue';
+import MakeCharaSheet from './components/make-chara-sheet.vue';
 
 createApp({
 	components: {
-		MaleCharaSheet
+		MakeCharaSheet
 	}
 }).mount('#app');
