@@ -1,5 +1,6 @@
 <template>
   <div>
+  <button @click="rollDice">能力値をダイスロールする</button>
     <select v-model="race" @change="applyRaceBonus">
       <option value="human">只人</option>
       <option value="dwarf">鉱人</option>
@@ -74,6 +75,15 @@ export default {
   },
 
   methods: {
+      rollDice() {
+    const results = Array.from({ length: 7 }, () => Math.floor(Math.random() * 3) + 1);
+    this.dice = results;
+
+    const keys = Object.keys(this.abilities);
+    keys.forEach((key, index) => {
+    this.abilities[key] = results[index];
+    });
+    }
     totalAbility() {
       return Object.values(this.abilities).reduce((sum, val) => sum + val, 0);
     },

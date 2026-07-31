@@ -9,7 +9,7 @@
 
 <body>
 	<div id="app">
-		<MakeCharaSheet></MakeCharaSheet>
+		<make-chara-sheet></make-chara-sheet>
 	</div>
 
 	@vite(['resources/js/app.js'])
