@@ -1,6 +1,7 @@
 <template>
   <div>
   <button @click="rollDice">能力値をダイスロールする</button>
+
     <select v-model="race" @change="applyRaceBonus">
       <option value="human">只人</option>
       <option value="dwarf">鉱人</option>
@@ -9,11 +10,14 @@
       <option value="halfling">圃人</option>
     </select>
 
+    <h3>ダイス結果</h3>
+    <div v-for="(d, index) in dice" :key="index">
+      <label>{{ Object.keys(abilities)[index] }} の出目：{{ d }}</label>
+    </div>
+
+    <h3>最終能力値</h3>
     <div v-for="(val, key) in abilities" :key="key">
-      <label>{{ key }}：</label>
-      <select v-model="abilities[key]">
-        <option v-for="d in dice" :value="d">{{ d }}</option>
-      </select>
+      <label>{{ key }}：{{ abilities[key] }}</label>
     </div>
 
     <div v-if="isBeginnerReliefAvailable()">
@@ -75,7 +79,7 @@ export default {
   },
 
   methods: {
-      rollDice() {
+    rollDice() {
     const results = Array.from({ length: 7 }, () => Math.floor(Math.random() * 3) + 1);
     this.dice = results;
 
@@ -83,16 +87,14 @@ export default {
     keys.forEach((key, index) => {
     this.abilities[key] = results[index];
     });
-    }
+    },
     totalAbility() {
       return Object.values(this.abilities).reduce((sum, val) => sum + val, 0);
     },
     isBeginnerReliefAvailable() {
       return this.totalAbility() <= 15 && !this.reliefApplied;
     },
-    rollDice() {
-      this.dice = Array.from({ length: 7 }, () => Math.floor(Math.random() * 3) + 1);
-    },
+
     applyRaceBonus() {
       const bonus = this.raceBonusTable[this.race];
       for (let key in this.abilities) {
@@ -100,10 +102,25 @@ export default {
       }
     },
     checkBeginnerRelief() {
-      if (this.isBeginnerReliefAvailable() && this.beginnerReliefTarget) {
-        this.abilities[this.beginnerReliefTarget] = 3;
-        this.reliefApplied = true;
-      }
+  if (this.isBeginnerReliefAvailable() && this.beginnerReliefTarget) {
+
+    // abilities のキー一覧を取得
+    const keys = Object.keys(this.abilities);
+
+    // 対象の能力値が dice の何番目かを調べる
+    const index = keys.indexOf(this.beginnerReliefTarget);
+
+    // 出目を 3 に補正
+    this.dice[index] = 3;
+
+    // abilities を dice から再計算
+    keys.forEach((key, i) => {
+      this.abilities[key] = this.dice[i];
+    });
+
+    this.reliefApplied = true;
+  }
+
     },
     applyBonus() {
       if (this.bonusTarget && !this.bonusApplied) {
