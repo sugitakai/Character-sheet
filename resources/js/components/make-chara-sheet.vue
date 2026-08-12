@@ -1,6 +1,6 @@
 <template>
   <div>
-  <button @click="rollDice">能力値をダイスロールする</button>
+    <button @click="rollDice">能力値をダイスロールする</button>
 
     <select v-model="race" @change="applyRaceBonus">
       <option value="human">只人</option>
@@ -46,9 +46,42 @@
     </div>
 
     <p>現在の能力値合計：{{ totalAbility() }}</p>
+
+    <!-- パロメーターダイス表示（必要ならここに残す） -->
     <option v-for="d in parameterDice" :value="d" :disabled="isAssigned(d)">
       {{ d }}
     </option>
+  
+    <!-- パロメーターダイスを振る -->
+    <button @click="rollParameterDice">パロメーターダイスを振る（2d6×3）</button>
+  
+    <div v-if="parameterDice.length">
+      <h3>パロメーターダイス（2d6 × 3）</h3>
+      <p>出目：{{ parameterDice.join(', ') }}</p>
+    </div>
+  
+    <h3>パロメーターダイス割り振り</h3>
+  
+    <label>生命力に割り振る：</label>
+    <select v-model="assignedParameter.vitality">
+      <option v-for="d in parameterDice" :value="d" :disabled="isAssigned(d) && assignedParameter.vitality !== d">
+        {{ d }}
+      </option>
+    </select>
+  
+    <label>移動力に割り振る：</label>
+    <select v-model="assignedParameter.move">
+      <option v-for="d in parameterDice" :value="d" :disabled="isAssigned(d) && assignedParameter.move !== d">
+        {{ d }}
+      </option>
+    </select>
+  
+    <label>呪文使用回数に割り振る：</label>
+    <select v-model="assignedParameter.spell">
+      <option v-for="d in parameterDice" :value="d" :disabled="isAssigned(d) && assignedParameter.spell !== d">
+        {{ d }}
+      </option>
+    </select>
   </div>
 </template>
 
