@@ -8,6 +8,12 @@
       <option value="elf">森人</option>
       <option value="lizardman">蜥蜴人</option>
       <option value="halfling">圃人</option>
+      <option value="darkElf">闇人</option>
+      <option value="lycanthrope">獣憑き</option>
+      <option value="martialBeastman">格闘獣人</option>
+      <option value="bruteBeastman">剛力獣人</option>
+      <option value="agileBeastman">俊敏獣人</option>
+      <option value="sensoryBeastman">知覚獣人</option>
     </select>
 
     <h3>ダイス結果</h3>
