@@ -46,6 +46,9 @@
     </div>
 
     <p>現在の能力値合計：{{ totalAbility() }}</p>
+    <option v-for="d in parameterDice" :value="d" :disabled="isAssigned(d)">
+      {{ d }}
+    </option>
   </div>
 </template>
 
@@ -65,34 +68,72 @@ export default {
       },
       race: '',
       raceBonusTable: {
-			human: { strength: 1, spirit: 0, dexterity: 0, intellect: 1, concentration: 0, endurance: 2, reflex: 0 , moveBonus: 3 },
-			dwarf: { strength: 2, spirit: 0, dexterity: 2, intellect: -1, concentration: 1, endurance: 1, reflex: -1 , moveBonus: 2 },
-			elf: { strength: -1, spirit: 1, dexterity: 1, intellect: 1, concentration: 0, endurance: -1, reflex: 1 , moveBonus: 4 },
-			lizardman: { strength: 2, spirit: 1, dexterity: 0, intellect: 0, concentration: 1, endurance: 0, reflex: 0 , moveBonus: 2 },
-			halfling: { strength: -1, spirit: 2, dexterity: 1, intellect: 0, concentration: -1, endurance: 0, reflex: 2 , moveBonus: 3 },
-			darkElf: { strength: 0, spirit: 2, dexterity: 1, intellect: 1, concentration: 0, endurance: -1,  reflex: 1 , moveBonus: 3 },         // 闇人（ダークエルフ）
-			lycanthrope: { strength: 1, spirit: 0, dexterity: 1, intellect: 0, concentration: 0, endurance: 1, reflex: 0 , moveBonus: 3 },     // 獣憑き（ライカンスロープ）
-			martialBeastman: { strength: 2, spirit: 0, dexterity: 1, intellect: 0, concentration: 1, endurance: 0, reflex: -1 , moveBonus: 3 }, // 格闘獣人
-			bruteBeastman: { strength: 1, spirit: 1, dexterity: 0, intellect: 0, concentration: 1, endurance: 2, reflex: -1 , moveBonus: 2 },   // 剛力獣人
-			agileBeastman: { strength: 1, spirit: -1, dexterity: 1, intellect: 0, concentration: 0, endurance: 0, reflex: 1 , moveBonus: 4 },   // 俊敏獣人
-			sensoryBeastman: { strength: -1, spirit: 0, dexterity: 1, intellect: 1, concentration: 1, endurance: 0, reflex: 1 , moveBonus: 3 }  // 知覚獣人
-		},
+			  human: { strength: 1, spirit: 0, dexterity: 0, intellect: 1, concentration: 0, endurance: 2, reflex: 0 , moveBonus: 3 },
+			  dwarf: { strength: 2, spirit: 0, dexterity: 2, intellect: -1, concentration: 1, endurance: 1, reflex: -1 , moveBonus: 2 },
+			  elf: { strength: -1, spirit: 1, dexterity: 1, intellect: 1, concentration: 0, endurance: -1, reflex: 1 , moveBonus: 4 },
+			  lizardman: { strength: 2, spirit: 1, dexterity: 0, intellect: 0, concentration: 1, endurance: 0, reflex: 0 , moveBonus: 2 },
+			  halfling: { strength: -1, spirit: 2, dexterity: 1, intellect: 0, concentration: -1, endurance: 0, reflex: 2 , moveBonus: 3 },
+			  darkElf: { strength: 0, spirit: 2, dexterity: 1, intellect: 1, concentration: 0, endurance: -1,  reflex: 1 , moveBonus: 3 },         // 闇人（ダークエルフ）
+			  lycanthrope: { strength: 1, spirit: 0, dexterity: 1, intellect: 0, concentration: 0, endurance: 1, reflex: 0 , moveBonus: 3 },     // 獣憑き（ライカンスロープ）
+			  martialBeastman: { strength: 2, spirit: 0, dexterity: 1, intellect: 0, concentration: 1, endurance: 0, reflex: -1 , moveBonus: 3 }, // 格闘獣人
+			  bruteBeastman: { strength: 1, spirit: 1, dexterity: 0, intellect: 0, concentration: 1, endurance: 2, reflex: -1 , moveBonus: 2 },   // 剛力獣人
+			  agileBeastman: { strength: 1, spirit: -1, dexterity: 1, intellect: 0, concentration: 0, endurance: 0, reflex: 1 , moveBonus: 4 },   // 俊敏獣人
+			  sensoryBeastman: { strength: -1, spirit: 0, dexterity: 1, intellect: 1, concentration: 1, endurance: 0, reflex: 1 , moveBonus: 3 }  // 知覚獣人
+		  },
       bonusTarget: '',
       beginnerReliefTarget: '',
       bonusApplied: false,
-      reliefApplied: false
+      reliefApplied: false,
+
+      parameterDice: [], // 2d6 を3回振った結果
+      assignedParameter: {
+        vitality: null,
+        move: null,
+        spell: null
+      },
+      adventurerLevel: 1,
+      spellSkillBonus: 0,
+      skillBonus: 0   // ★ これを追加
     };
   },
+  computed: {
+    vitality() {
+      const base = this.abilities.strength + this.abilities.spirit + this.abilities.reflex;
+      const dice = this.assignedParameter.vitality || 0;
+      return base + dice;
+    },
 
+    vitality2() {
+      return this.vitality * 2;
+    },
+
+    move() {
+      const dice = this.assignedParameter.move || 0;
+      const bonus = this.raceBonusTable[this.race]?.moveBonus || 1;
+      return dice * bonus;
+    },
+
+    spellUses() {
+      const dice = this.assignedParameter.spell || 0;
+      let base = 0;
+      if (dice <= 6) base = 0;
+      else if (dice <= 9) base = 1;
+      else if (dice <= 11) base = 2;
+      else base = 3;
+      return base + this.spellSkillBonus;
+    },
+    resistBase() {
+      return this.abilities.spirit + this.abilities.reflex + this.adventurerLevel + this.skillBonus;
+    }
+  },
   methods: {
-    rollDice() {
-    const results = Array.from({ length: 7 }, () => Math.floor(Math.random() * 3) + 1);
-    this.dice = results;
-
-    const keys = Object.keys(this.abilities);
-    keys.forEach((key, index) => {
-    this.abilities[key] = results[index];
-    });
+      rollDice() {
+        const results = Array.from({ length: 7 }, () => Math.floor(Math.random() * 3) + 1);
+        this.dice = results;
+        const keys = Object.keys(this.abilities);
+        keys.forEach((key, index) => {
+        this.abilities[key] = results[index];
+      });
     },
     totalAbility() {
       return Object.values(this.abilities).reduce((sum, val) => sum + val, 0);
@@ -108,31 +149,40 @@ export default {
       }
     },
     checkBeginnerRelief() {
-  if (this.isBeginnerReliefAvailable() && this.beginnerReliefTarget) {
+      if (this.isBeginnerReliefAvailable() && this.beginnerReliefTarget) {
+      
+        // abilities のキー一覧を取得
+        const keys = Object.keys(this.abilities);
 
-    // abilities のキー一覧を取得
-    const keys = Object.keys(this.abilities);
+        // 対象の能力値が dice の何番目かを調べる
+        const index = keys.indexOf(this.beginnerReliefTarget);
 
-    // 対象の能力値が dice の何番目かを調べる
-    const index = keys.indexOf(this.beginnerReliefTarget);
+        // 出目を 3 に補正
+        this.dice[index] = 3;
 
-    // 出目を 3 に補正
-    this.dice[index] = 3;
+        // abilities を dice から再計算
+        keys.forEach((key, i) => {
+          this.abilities[key] = this.dice[i];
+        });
 
-    // abilities を dice から再計算
-    keys.forEach((key, i) => {
-      this.abilities[key] = this.dice[i];
-    });
-
-    this.reliefApplied = true;
-  }
+        this.reliefApplied = true;
+      }
 
     },
+
     applyBonus() {
       if (this.bonusTarget && !this.bonusApplied) {
         this.abilities[this.bonusTarget]++;
         this.bonusApplied = true;
       }
+    },
+
+    rollParameterDice() {
+      this.parameterDice = [
+        Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1,
+        Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1,
+        Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1
+      ];
     }
   }
 };
