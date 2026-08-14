@@ -40,16 +40,7 @@
 
       <button @click="rollDice">能力値をダイスロールする</button>
 
-      <table class="ability-table">
-        <tr><th>能力</th><th>出目</th><th>最終値</th></tr>
-        <tr><td>体力点</td><td>{{ dice[0] }}</td><td>{{ abilities.strength }}</td></tr>
-        <tr><td>魂魄点</td><td>{{ dice[1] }}</td><td>{{ abilities.spirit }}</td></tr>
-        <tr><td>技量点</td><td>{{ dice[2] }}</td><td>{{ abilities.dexterity }}</td></tr>
-        <tr><td>知力点</td><td>{{ dice[3] }}</td><td>{{ abilities.intellect }}</td></tr>
-        <tr><td>集中度</td><td>{{ dice[4] }}</td><td>{{ abilities.concentration }}</td></tr>
-        <tr><td>持久度</td><td>{{ dice[5] }}</td><td>{{ abilities.endurance }}</td></tr>
-        <tr><td>反射度</td><td>{{ dice[6] }}</td><td>{{ abilities.reflex }}</td></tr>
-      </table>
+
       <p>能力値合計：{{ totalAbility() }}</p>
       <h3>◆能力値マトリクス</h3>
       <table class="matrix-table">
@@ -124,7 +115,6 @@
       </div>
 
       <h3>割り振り</h3>
-
       <label>生命力：</label>
       <select v-model="assignedParameter.vitality">
         <option v-for="d in parameterDice" :value="d" :disabled="isAssigned(d) && assignedParameter.vitality !== d">
@@ -195,7 +185,7 @@ export default {
   },
   computed: {
     vitality() {
-      const base = this.abilities.strength + this.abilities.spirit + this.abilities.reflex;
+      const base = this.abilities.strength + this.abilities.spirit + this.abilities.endurance;
       const dice = this.assignedParameter.vitality || 0;
       return base + dice;
     },
