@@ -21,6 +21,46 @@
       <p>性別：{{ gender }}</p>
       <p>年齢：{{ age }}</p>
       <p>経歴：{{ history1 }} ／ {{ history2 }} ／ {{ history3 }}</p>
+      <!-- ◆経歴（2d6×3 → 割り振り） -->
+<section class="section-origin">
+  <h2>◆経歴</h2>
+
+  <!-- 経歴ダイスを振る -->
+  <button @click="rollOriginDice">経歴ダイスを振る（2d6×3）</button>
+
+  <div v-if="originDice.length">
+    <p>出目：{{ originDice.join(', ') }}</p>
+
+    <h3>割り振り</h3>
+    <!-- 経歴① -->
+    <label>経歴①：</label>
+    <select v-model="assignedOrigin.origin1">
+      <option v-for="d in originDice" :value="d" :disabled="isOriginAssigned(d) && assignedOrigin.origin1 !== d">
+        {{ d }}
+      </option>
+    </select>
+    <p>→ {{ origin1 }}</p>
+
+    <!-- 経歴② -->
+    <label>経歴②：</label>
+    <select v-model="assignedOrigin.origin2">
+      <option v-for="d in originDice" :value="d" :disabled="isOriginAssigned(d) && assignedOrigin.origin2 !== d">
+        {{ d }}
+      </option>
+    </select>
+    <p>→ {{ origin2 }}</p>
+
+    <!-- 経歴③ -->
+    <label>経歴③：</label>
+    <select v-model="assignedOrigin.origin3">
+      <option v-for="d in originDice" :value="d" :disabled="isOriginAssigned(d) && assignedOrigin.origin3 !== d">
+        {{ d }}
+      </option>
+    </select>
+    <p>→ {{ origin3 }}</p>
+  </div>
+</section>
+
       <p>身体的特徴：{{ bodyFeature }}</p>
     </section>
     
@@ -172,6 +212,39 @@ export default {
       bonusApplied: false,
       reliefApplied: false,
 
+      originDice: [],
+      origin1: "",
+      origin2: "",
+      origin3: "",
+      // 経歴②・③は全種族共通
+      commonOriginTable: {
+        origin2: {
+          2: "奴隷",
+          3: "牢獄",
+          4: "戦場",
+          5: "神殿",
+          6: "孤児",
+          7: "平穏",
+          8: "貧困",
+          9: "学校",
+          10: "箱入り",
+          11: "贅沢",
+          12: "宮廷"
+        },
+        origin3: {
+          2: "宿敵",
+          3: "上司",
+          4: "後輩",
+          5: "取引相手",
+          6: "部下",
+          7: "家族",
+          8: "親友",
+          9: "先輩",
+          10: "婚約者",
+          11: "好敵手",
+          12: "師匠"
+        }
+      },
       parameterDice: [], // 2d6 を3回振った結果
       assignedParameter: {
         vitality: null,
@@ -284,6 +357,34 @@ export default {
     },
     isAssigned(diceValue) {
       return Object.values(this.assignedParameter).includes(diceValue);
+    },
+    rollOriginDice() {
+      this.originDice = [
+        Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1,
+        Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1,
+        Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1
+      ];
+    },
+    isOriginAssigned(d) {
+      return Object.values(this.assignedOrigin).includes(d);
+    },
+    
+    watch: {
+        'assignedOrigin.origin1'(val) {
+        if (val) {
+          this.origin1 = this.commonOriginTable.origin1[val];
+        }
+      },
+      'assignedOrigin.origin2'(val) {
+        if (val) {
+          this.origin2 = this.commonOriginTable.origin2[val];
+        }
+      },
+      'assignedOrigin.origin3'(val) {
+        if (val) {
+          this.origin3 = this.commonOriginTable.origin3[val];
+        }
+      }
     },
     rollParameterDice() {
       this.parameterDice = [
