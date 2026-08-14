@@ -1,84 +1,151 @@
 <template>
-  <div>
-    <button @click="rollDice">能力値をダイスロールする</button>
+  <div class="chara-sheet">
+    <!-- ◆基本情報 -->
+    <section class="section-basic">
+      <h2>◆基本情報</h2>
+      <p>名前：{{ name }}</p>
+      <p>種族：{{ race }}
+        <select v-model="race" @change="applyRaceBonus">
+          <option value="human">只人</option>
+          <option value="dwarf">鉱人</option>
+          <option value="elf">森人</option>
+          <option value="lizardman">蜥蜴人</option>
+          <option value="halfling">圃人</option>
+          <option value="darkElf">闇人</option>
+          <option value="lycanthrope">獣憑き</option>
+          <option value="martialBeastman">格闘獣人</option>
+          <option value="bruteBeastman">剛力獣人</option>
+          <option value="agileBeastman">俊敏獣人</option>
+          <option value="sensoryBeastman">知覚獣人</option>
+        </select></p>
+      <p>性別：{{ gender }}</p>
+      <p>年齢：{{ age }}</p>
+      <p>経歴：{{ history1 }} ／ {{ history2 }} ／ {{ history3 }}</p>
+      <p>身体的特徴：{{ bodyFeature }}</p>
+    </section>
+    
+    <!-- ◆冒険者情報 -->
+    <section class="section-adventurer">
+      <h2>◆冒険者レベル</h2>
+      <p>冒険者レベル：{{ adventurerLevel }}</p>
+      <p>職業レベル：{{ job1 }} ／ {{ job2 }} ／ {{ job3 }}</p>
+      <p>等級：白磁級</p>
+      <p>経験点：{{ exp }} ／ {{ expMax }}</p>
+      <p>成長点：{{ growth }} ／ {{ growthMax }}</p>
+    </section>
 
-    <select v-model="race" @change="applyRaceBonus">
-      <option value="human">只人</option>
-      <option value="dwarf">鉱人</option>
-      <option value="elf">森人</option>
-      <option value="lizardman">蜥蜴人</option>
-      <option value="halfling">圃人</option>
-      <option value="darkElf">闇人</option>
-      <option value="lycanthrope">獣憑き</option>
-      <option value="martialBeastman">格闘獣人</option>
-      <option value="bruteBeastman">剛力獣人</option>
-      <option value="agileBeastman">俊敏獣人</option>
-      <option value="sensoryBeastman">知覚獣人</option>
-    </select>
+    <!-- ◆能力値 -->
+    <section class="section-ability">
+      <h2>◆能力値</h2>
 
-    <h3>ダイス結果</h3>
-    <div v-for="(d, index) in dice" :key="index">
-      <label>{{ Object.keys(abilities)[index] }} の出目：{{ d }}</label>
-    </div>
+      <button @click="rollDice">能力値をダイスロールする</button>
 
-    <h3>最終能力値</h3>
-    <div v-for="(val, key) in abilities" :key="key">
-      <label>{{ key }}：{{ abilities[key] }}</label>
-    </div>
+      <table class="ability-table">
+        <tr><th>能力</th><th>出目</th><th>最終値</th></tr>
+        <tr><td>体力点</td><td>{{ dice[0] }}</td><td>{{ abilities.strength }}</td></tr>
+        <tr><td>魂魄点</td><td>{{ dice[1] }}</td><td>{{ abilities.spirit }}</td></tr>
+        <tr><td>技量点</td><td>{{ dice[2] }}</td><td>{{ abilities.dexterity }}</td></tr>
+        <tr><td>知力点</td><td>{{ dice[3] }}</td><td>{{ abilities.intellect }}</td></tr>
+        <tr><td>集中度</td><td>{{ dice[4] }}</td><td>{{ abilities.concentration }}</td></tr>
+        <tr><td>持久度</td><td>{{ dice[5] }}</td><td>{{ abilities.endurance }}</td></tr>
+        <tr><td>反射度</td><td>{{ dice[6] }}</td><td>{{ abilities.reflex }}</td></tr>
+      </table>
+      <p>能力値合計：{{ totalAbility() }}</p>
+      <h3>◆能力値マトリクス</h3>
+      <table class="matrix-table">
+        <tr>
+          <th>能力</th>
+          <th>体力{{ abilities.strength }}</th>
+          <th>魂魄{{ abilities.spirit }}</th>
+          <th>技量{{ abilities.dexterity }}</th>
+          <th>知力{{ abilities.intellect }}</th>
+        </tr>
+        <tr>
+          <td>集中度{{ abilities.concentration }}</td>
+          <td>{{ abilities.strength + abilities.concentration }}</td>
+          <td>{{ abilities.spirit + abilities.concentration }}</td>
+          <td>{{ abilities.dexterity + abilities.concentration }}</td>
+          <td>{{ abilities.intellect + abilities.concentration }}</td>
+        </tr>
+        <tr>
+          <td>持久度{{ abilities.endurance }}</td>
+          <td>{{ abilities.strength + abilities.endurance }}</td>
+          <td>{{ abilities.spirit + abilities.endurance }}</td>
+          <td>{{ abilities.dexterity + abilities.endurance }}</td>
+          <td>{{ abilities.intellect + abilities.endurance }}</td>
+        </tr>
+        <tr>
+          <td>反射度{{ abilities.reflex }}</td>
+          <td>{{ abilities.strength + abilities.reflex }}</td>
+          <td>{{ abilities.spirit + abilities.reflex }}</td>
+          <td>{{ abilities.dexterity + abilities.reflex }}</td>
+          <td>{{ abilities.intellect + abilities.reflex }}</td>
+        </tr>
+      </table>
 
-    <div v-if="isBeginnerReliefAvailable()">
-      <label>初心者救済：1つの能力値を3に補正</label>
-      <select v-model="beginnerReliefTarget">
-        <option v-for="(val, key) in abilities" :value="key">{{ key }}</option>
+      <div v-if="isBeginnerReliefAvailable()">
+        <label>初心者救済：能力値を1つ3に補正</label>
+        <select v-model="beginnerReliefTarget">
+          <option v-for="(v, key) in abilities" :value="key">{{ key }}</option>
+        </select>
+        <button @click="checkBeginnerRelief">補正する</button>
+      </div>
+
+      <div v-if="!bonusApplied">
+        <label>好きな能力値を+1：</label>
+        <select v-model="bonusTarget">
+          <option value="strength">体力点</option>
+          <option value="spirit">魂魄点</option>
+          <option value="dexterity">技量点</option>
+          <option value="intellect">知力点</option>
+        </select>
+        <button @click="applyBonus">+1する</button>
+      </div>
+    </section>
+
+    <!-- ◆派生ステータス -->
+    <section class="section-derived">
+      <h2>◆派生ステータス</h2>
+      <p>生命力：{{ vitality }}</p>
+      <p>生命力 ×2：{{ vitality2 }}</p>
+      <p>移動力：{{ move }}</p>
+      <p>呪文使用回数：{{ spellUses }}</p>
+      <p>呪文抵抗基準値：{{ resistBase }}</p>
+    </section>
+
+    <!-- ◆パロメーターダイス -->
+    <section class="section-parameter">
+      <h2>◆パロメーターダイス</h2>
+
+      <button @click="rollParameterDice">2d6 × 3 を振る</button>
+
+      <div v-if="parameterDice.length">
+        <p>出目：{{ parameterDice.join(', ') }}</p>
+      </div>
+
+      <h3>割り振り</h3>
+
+      <label>生命力：</label>
+      <select v-model="assignedParameter.vitality">
+        <option v-for="d in parameterDice" :value="d" :disabled="isAssigned(d) && assignedParameter.vitality !== d">
+          {{ d }}
+        </option>
       </select>
-      <button @click="checkBeginnerRelief">補正する</button>
-    </div>
 
-    <div v-if="!bonusApplied">
-      <label>好きな能力値を+1：</label>
-      <select v-model="bonusTarget">
-        <option value="strength">体力点</option>
-        <option value="spirit">魂魄点</option>
-        <option value="dexterity">技量点</option>
-        <option value="intellect">知力点</option>
+      <label>移動力：</label>
+      <select v-model="assignedParameter.move">
+        <option v-for="d in parameterDice" :value="d" :disabled="isAssigned(d) && assignedParameter.move !== d">
+          {{ d }}
+        </option>
       </select>
-      <button @click="applyBonus">+1する</button>
-    </div>
 
-    <p>現在の能力値合計：{{ totalAbility() }}</p>
-
-
-  
-    <!-- パロメーターダイスを振る -->
-    <button @click="rollParameterDice">パロメーターダイスを振る（2d6×3）</button>
-
-    <div v-if="parameterDice.length">
-      <h3>パロメーターダイス（2d6 × 3）</h3>
-      <p>出目：{{ parameterDice.join(', ') }}</p>
-    </div>
-
-    <h3>パロメーターダイス割り振り</h3>
-
-    <label>生命力に割り振る：</label>
-    <select v-model="assignedParameter.vitality">
-      <option v-for="d in parameterDice" :value="d" :disabled="isAssigned(d) && assignedParameter.vitality !== d">
-        {{ d }}
-      </option>
-    </select>
-
-    <label>移動力に割り振る：</label>
-    <select v-model="assignedParameter.move">
-      <option v-for="d in parameterDice" :value="d" :disabled="isAssigned(d) && assignedParameter.move !== d">
-        {{ d }}
-      </option>
-    </select>
-
-    <label>呪文使用回数に割り振る：</label>
-    <select v-model="assignedParameter.spell">
-      <option v-for="d in parameterDice" :value="d" :disabled="isAssigned(d) && assignedParameter.spell !== d">
-        {{ d }}
-      </option>
-    </select>
+      <label>呪文使用回数：</label>
+      <select v-model="assignedParameter.spell">
+        <option v-for="d in parameterDice" :value="d" :disabled="isAssigned(d) && assignedParameter.spell !== d">
+          {{ d }}
+        </option>
+      </select>
+    </section>
   </div>
 </template>
 
@@ -223,10 +290,6 @@ export default {
       if (this.bonusTarget && !this.bonusApplied) {
         this.abilities[this.bonusTarget]++;
         this.bonusApplied = true;
-        // ★ 種族補正を再適用
-        if (this.race) {
-          this.applyRaceBonus();
-        }
       }
     },
     isAssigned(diceValue) {
