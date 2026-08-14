@@ -1,0 +1,16 @@
+.matrix-table {
+	border-collapse: collapse;
+	margin-top: 10px;
+}
+
+.matrix-table th,
+.matrix-table td {
+	border: 1px solid #444;
+	padding: 6px 10px;
+	text-align: center;
+	font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+}
+
+.matrix-table th {
+	background-color: #eee;
+}
