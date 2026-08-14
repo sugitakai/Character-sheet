@@ -213,9 +213,22 @@ export default {
       reliefApplied: false,
 
       originDice: [],
+
+    // 割り振り先
+    assignedOrigin: {
+      origin1: null,
+      origin2: null,
+      origin3: null
+    },
+
+    // 経歴結果
       origin1: "",
       origin2: "",
       origin3: "",
+      // 経歴表示用
+      history1: "",
+      history2: "",
+      history3: "",
       // 経歴②・③は全種族共通
       commonOriginTable: {
         origin2: {
@@ -284,6 +297,26 @@ export default {
     },
     resistBase() {
       return this.abilities.spirit + this.abilities.reflex + this.adventurerLevel + this.skillBonus;
+    }
+  },
+    watch: {
+      'assignedOrigin.origin1'(val) {
+      if (val) {
+        this.origin1 = this.commonOriginTable.origin1[val];
+        this.history1 = this.origin1;
+      }
+    },
+    'assignedOrigin.origin2'(val) {
+      if (val) {
+        this.origin2 = this.commonOriginTable.origin2[val];
+        this.history2 = this.origin2;
+      }
+    },
+    'assignedOrigin.origin3'(val) {
+      if (val) {
+        this.origin3 = this.commonOriginTable.origin3[val];
+        this.history3 = this.origin3;
+      }
     }
   },
   methods: {
@@ -368,24 +401,7 @@ export default {
     isOriginAssigned(d) {
       return Object.values(this.assignedOrigin).includes(d);
     },
-    
-    watch: {
-        'assignedOrigin.origin1'(val) {
-        if (val) {
-          this.origin1 = this.commonOriginTable.origin1[val];
-        }
-      },
-      'assignedOrigin.origin2'(val) {
-        if (val) {
-          this.origin2 = this.commonOriginTable.origin2[val];
-        }
-      },
-      'assignedOrigin.origin3'(val) {
-        if (val) {
-          this.origin3 = this.commonOriginTable.origin3[val];
-        }
-      }
-    },
+
     rollParameterDice() {
       this.parameterDice = [
         Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1,
