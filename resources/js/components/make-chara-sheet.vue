@@ -123,7 +123,7 @@ export default {
       },
       adventurerLevel: 1,
       spellSkillBonus: 0,
-      skillBonus: 0   // ★ これを追加
+      skillBonus: 0   // 
     };
   },
   computed: {
@@ -160,24 +160,41 @@ export default {
       rollDice() {
         const results = Array.from({ length: 7 }, () => Math.floor(Math.random() * 3) + 1);
         this.dice = results;
+
         const keys = Object.keys(this.abilities);
         keys.forEach((key, index) => {
-        this.abilities[key] = results[index];
-      });
+          this.abilities[key] = results[index];
+        });
+      
+        // ★ 種族が選ばれているなら補正を再適用
+        if (this.race) {
+          this.applyRaceBonus();
+        }
     },
     totalAbility() {
-      return Object.values(this.abilities).reduce((sum, val) => sum + val, 0);
-    },
-    isBeginnerReliefAvailable() {
-      return this.totalAbility() <= 15 && !this.reliefApplied;
+        return Object.values(this.abilities).reduce((sum, val) => sum + val, 0);
+      },
+      isBeginnerReliefAvailable() {
+        return this.totalAbility() <= 15 && !this.reliefApplied;
     },
 
     applyRaceBonus() {
       const bonus = this.raceBonusTable[this.race];
-      for (let key in this.abilities) {
+      if (!bonus) return;
+
+      const keys = Object.keys(this.abilities);
+
+      // ① まず abilities を dice から復元（素の出目に戻す）
+      keys.forEach((key, index) => {
+        this.abilities[key] = this.dice[index];
+      });
+    
+      // ② その上に種族補正を加算
+      keys.forEach((key) => {
         this.abilities[key] += bonus[key] || 0;
-      }
+      });
     },
+
     checkBeginnerRelief() {
       if (this.isBeginnerReliefAvailable() && this.beginnerReliefTarget) {
       
@@ -194,16 +211,22 @@ export default {
         keys.forEach((key, i) => {
           this.abilities[key] = this.dice[i];
         });
-
         this.reliefApplied = true;
+        // ★ 種族補正を再適用
+        if (this.race) {
+          this.applyRaceBonus();
+        }
       }
-
     },
 
     applyBonus() {
       if (this.bonusTarget && !this.bonusApplied) {
         this.abilities[this.bonusTarget]++;
         this.bonusApplied = true;
+        // ★ 種族補正を再適用
+        if (this.race) {
+          this.applyRaceBonus();
+        }
       }
     },
     isAssigned(diceValue) {
