@@ -210,7 +210,8 @@ export default {
         reflex: 0
       },
       race: '',
-      raceBonusTable: {
+      subRace: '',
+      raceBonusTable: { 
 			  human: { strength: 1, spirit: 0, dexterity: 0, intellect: 1, concentration: 0, endurance: 2, reflex: 0 , moveBonus: 3 },
 			  dwarf: { strength: 2, spirit: 0, dexterity: 2, intellect: -1, concentration: 1, endurance: 1, reflex: -1 , moveBonus: 2 },
 			  elf: { strength: -1, spirit: 1, dexterity: 1, intellect: 1, concentration: 0, endurance: -1, reflex: 1 , moveBonus: 4 },
@@ -284,7 +285,7 @@ export default {
             9: "兵士",
             10: "騎士",
             11: "神官",
-            12: "貴族",
+            12: "貴族"
           }
         },
         dwarf: {
@@ -299,7 +300,7 @@ export default {
             9: "兵士",
             10: "盾砕き",
             11: "神官",
-            12: "貴族",
+            12: "貴族"
           }
         },
         elf: {
@@ -314,7 +315,7 @@ export default {
             9: "楽師",
             10: "語り部",
             11: "祈祷師",
-            12: "族長",
+            12: "族長"
           }
         },
         lizardman: {
@@ -329,7 +330,7 @@ export default {
             9: "歩兵",
             10: "軍師",
             11: "司祭",
-            12: "王卵",
+            12: "王卵"
           }
         },
         halfling: {
@@ -344,7 +345,7 @@ export default {
             9: "亭主",
             10: "庭師",
             11: "騎士",
-            12: "地主",
+            12: "地主"
           }
         },
         darkElf: {
@@ -359,22 +360,22 @@ export default {
             9: "武人",
             10: "神官",
             11: "精霊使い",
-            12: "貴種",
+            12: "貴種"
           }
         },
         Beastman: {
           origin1: {
             2: "冒険者",
             3: "無頼",
-            4: "占い師",
-            5: "労働者",
-            6: "占い師",
+            4: "奴隷",
+            5: "占い師",
+            6: "労働者",
             7: "狩人",
             8: "傭兵",
             9: "兵士",
             10: "商人",
             11: "自然崇拝者",
-            12: "族長",
+            12: "族長"
           }
         }
       },
@@ -451,7 +452,8 @@ export default {
     watch: {
       'assignedOrigin.origin1'(val) {
       if (val) {
-        this.origin1 = this.commonOriginTable.origin1[val];
+        const baseRace = this.subRace || this.race;
+        this.origin1 = this.raceOriginTable[baseRace].origin1[val];
         this.history1 = this.origin1;
       }
     },
@@ -489,24 +491,41 @@ export default {
       isBeginnerReliefAvailable() {
         return this.totalAbility() <= 15 && !this.reliefApplied;
     },
-
     applyRaceBonus() {
-      const bonus = this.raceBonusTable[this.race];
-      if (!bonus) return;
+        // 追加種族の仕様
+        const subRaceTable = {
+          "": { useRaceBonus: true },
+          damphir: { useRaceBonus: true },
+          kruusnik: { useRaceBonus: true },
+          zduhachi: { useRaceBonus: true },
+          lycanthrope: { useRaceBonus: false } // 独自補正を使う
+        };
 
-      const keys = Object.keys(this.abilities);
+        const sub = subRaceTable[this.subRace];
 
-      // ① まず abilities を dice から復元（素の出目に戻す）
-      keys.forEach((key, index) => {
-        this.abilities[key] = this.dice[index];
-      });
+        // 種族補正に使う種族を決定
+        let bonusRace = this.race;
+
+        // 獣憑きだけは独自補正を使う
+        if (sub && sub.useRaceBonus === false) {
+          bonusRace = "lycanthrope";
+        }
     
-      // ② その上に種族補正を加算
-      keys.forEach((key) => {
-        this.abilities[key] += bonus[key] || 0;
-      });
-    },
-
+        const bonus = this.raceBonusTable[bonusRace];
+        if (!bonus) return;
+        
+        const keys = Object.keys(this.abilities);
+        
+        // abilities を dice に戻す
+        keys.forEach((key, index) => {
+          this.abilities[key] = this.dice[index];
+        });
+      
+        // 種族補正を加算
+        keys.forEach((key) => {
+          this.abilities[key] += bonus[key] || 0;
+        });
+      },    
     checkBeginnerRelief() {
       if (this.isBeginnerReliefAvailable() && this.beginnerReliefTarget) {
       
@@ -546,6 +565,12 @@ export default {
         Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1,
         Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1
       ];
+      
+        // 経歴①は subRace が本来の種族になる
+        const baseRace = this.subRace || this.race;
+        const d = this.originDice[0]; // 1つ目の出目を使う
+        this.origin1 = this.raceOriginTable[baseRace].origin1[d];
+        this.history1 = this.origin1;
     },
     isOriginAssigned(d) {
       return Object.values(this.assignedOrigin).includes(d);
