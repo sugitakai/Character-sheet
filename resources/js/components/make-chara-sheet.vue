@@ -4,7 +4,7 @@
     <section class="section-basic">
       <h2>◆基本情報</h2>
       <p>名前：{{ name }}</p>
-      <p>種族：{{ race }}
+      <p>種族：
         <select v-model="race" @change="applyRaceBonus">
           <option value="human">只人</option>
           <option value="dwarf">鉱人</option>
@@ -17,50 +17,66 @@
           <option value="bruteBeastman">剛力獣人</option>
           <option value="agileBeastman">俊敏獣人</option>
           <option value="sensoryBeastman">知覚獣人</option>
-        </select></p>
+        </select>
+        <select v-model="subRace">
+          <option value="">なし</option>
+          <option value="damphir">ダンピール</option>
+          <option value="kruusnik">クルースニク</option>
+          <option value="zduhachi">ズドゥハチ</option>
+          <option value="human">只人</option>
+          <option value="dwarf">鉱人</option>
+          <option value="elf">森人</option>
+          <option value="lizardman">蜥蜴人</option>
+          <option value="halfling">圃人</option>
+          <option value="darkElf">闇人</option>
+          <option value="martialBeastman">格闘獣人</option>
+          <option value="bruteBeastman">剛力獣人</option>
+          <option value="agileBeastman">俊敏獣人</option>
+          <option value="sensoryBeastman">知覚獣人</option>
+        </select>
+      </p>
       <p>性別：{{ gender }}</p>
       <p>年齢：{{ age }}</p>
       <p>経歴：{{ history1 }} ／ {{ history2 }} ／ {{ history3 }}</p>
       <!-- ◆経歴（2d6×3 → 割り振り） -->
-<section class="section-origin">
-  <h2>◆経歴</h2>
-
-  <!-- 経歴ダイスを振る -->
-  <button @click="rollOriginDice">経歴ダイスを振る（2d6×3）</button>
-
-  <div v-if="originDice.length">
-    <p>出目：{{ originDice.join(', ') }}</p>
-
-    <h3>割り振り</h3>
-    <!-- 経歴① -->
-    <label>経歴①：</label>
-    <select v-model="assignedOrigin.origin1">
-      <option v-for="d in originDice" :value="d" :disabled="isOriginAssigned(d) && assignedOrigin.origin1 !== d">
-        {{ d }}
-      </option>
-    </select>
-    <p>→ {{ origin1 }}</p>
-
-    <!-- 経歴② -->
-    <label>経歴②：</label>
-    <select v-model="assignedOrigin.origin2">
-      <option v-for="d in originDice" :value="d" :disabled="isOriginAssigned(d) && assignedOrigin.origin2 !== d">
-        {{ d }}
-      </option>
-    </select>
-    <p>→ {{ origin2 }}</p>
-
-    <!-- 経歴③ -->
-    <label>経歴③：</label>
-    <select v-model="assignedOrigin.origin3">
-      <option v-for="d in originDice" :value="d" :disabled="isOriginAssigned(d) && assignedOrigin.origin3 !== d">
-        {{ d }}
-      </option>
-    </select>
-    <p>→ {{ origin3 }}</p>
-  </div>
-</section>
-
+      <section class="section-origin">
+        <h2>◆経歴</h2>
+      
+        <!-- 経歴ダイスを振る -->
+        <button @click="rollOriginDice">経歴ダイスを振る（2d6×3）</button>
+      
+        <div v-if="originDice.length">
+          <p>出目：{{ originDice.join(', ') }}</p>
+        
+          <h3>割り振り</h3>
+          <!-- 経歴① -->
+          <label>経歴①：</label>
+          <select v-model="assignedOrigin.origin1">
+            <option v-for="d in originDice" :value="d" :disabled="isOriginAssigned(d) && assignedOrigin.origin1 !== d">
+              {{ d }}
+            </option>
+          </select>
+          <p>→ {{ origin1 }}</p>
+        
+          <!-- 経歴② -->
+          <label>経歴②：</label>
+          <select v-model="assignedOrigin.origin2">
+            <option v-for="d in originDice" :value="d" :disabled="isOriginAssigned(d) && assignedOrigin.origin2 !== d">
+              {{ d }}
+            </option>
+          </select>
+          <p>→ {{ origin2 }}</p>
+        
+          <!-- 経歴③ -->
+          <label>経歴③：</label>
+          <select v-model="assignedOrigin.origin3">
+            <option v-for="d in originDice" :value="d" :disabled="isOriginAssigned(d) && assignedOrigin.origin3 !== d">
+              {{ d }}
+            </option>
+          </select>
+          <p>→ {{ origin3 }}</p>
+        </div>
+      </section>
       <p>身体的特徴：{{ bodyFeature }}</p>
     </section>
     
@@ -211,7 +227,33 @@ export default {
       beginnerReliefTarget: '',
       bonusApplied: false,
       reliefApplied: false,
-
+      subRaceTable: {
+        "": {
+          label: "なし",
+          useRaceBonus: true,
+          useRaceOrigin: true
+        },
+        damphir: {
+          label: "ダンピール",
+          useRaceBonus: true,
+          useRaceOrigin: true
+        },
+        kruusnik: {
+          label: "クルースニク",
+          useRaceBonus: true,
+          useRaceOrigin: true
+        },
+        zduhachi: {
+          label: "ズドゥハチ",
+          useRaceBonus: true,
+          useRaceOrigin: true
+        },
+        lycanthrope: {
+          label: "獣憑き",
+          useRaceBonus: false,   // 独自補正を使う
+          useRaceOrigin: true    // 経歴①は本来の種族を使う
+        }
+      },
       originDice: [],
 
     // 割り振り先
