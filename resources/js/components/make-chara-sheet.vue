@@ -91,8 +91,8 @@
       <p>冒険者レベル：{{ adventurerLevel }}</p>
       <p>職業レベル：{{ job1 }} ／ {{ job2 }} ／ {{ job3 }}</p>
       <p>等級：白磁級</p>
-      <p>経験点：{{ exp }} ／ {{ expMax }}</p>
-      <p>成長点：{{ growth }} ／ {{ growthMax }}</p>
+      <p>経験点：{{ exp }} 3000／3000 {{ expMax }}</p>
+      <p>成長点：{{ growth }} 10／10 {{ growthMax }}</p>
     </section>
 
     <!-- ◆能力値 -->
