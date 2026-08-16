@@ -3,7 +3,7 @@
     <!-- ◆基本情報 -->
     <section class="section-basic">
       <h2>◆基本情報</h2>
-      <p>名前：{{ name }}</p>
+      <p>名前：<input type="text"></p>
       <p>種族：
         <select v-model="race" @change="applyRaceBonus">
           <option value="human">只人</option>
@@ -35,8 +35,13 @@
           <option value="sensoryBeastman">知覚獣人</option>
         </select>
       </p>
-      <p>性別：{{ gender }}</p>
-      <p>年齢：{{ age }}</p>
+      <p>性別：
+        <select>
+          <option value="male">男</option>
+          <option value="female">女</option>
+        </select>
+      </p>
+      <p>年齢：<input type="number" min="15" value="15" style="width: 45px;"></p>
       <p>経歴：{{ history1 }} ／ {{ history2 }} ／ {{ history3 }}</p>
       <!-- ◆経歴（2d6×3 → 割り振り） -->
       <section class="section-origin">
@@ -77,7 +82,7 @@
           <p>→ {{ origin3 }}</p>
         </div>
       </section>
-      <p>身体的特徴：{{ bodyFeature }}</p>
+      <PhysicalFeatures/>
     </section>
     
     <!-- ◆冒険者情報 -->
@@ -196,7 +201,11 @@
 </template>
 
 <script>
+import PhysicalFeatures from './PhysicalFeatures.vue';
 export default {
+  components: {
+    PhysicalFeatures
+  },
   data() {
     return {
       dice: Array(7).fill(1),// 出目（1〜3）
