@@ -363,7 +363,7 @@ export default {
             12: "貴種"
           }
         },
-        Beastman: {
+        martialBeastman: {
           origin1: {
             2: "冒険者",
             3: "無頼",
@@ -377,8 +377,53 @@ export default {
             11: "自然崇拝者",
             12: "族長"
           }
-        }
-      },
+        },
+        bruteBeastman: {
+                  origin1: {
+                    2: "冒険者",
+                    3: "無頼",
+                    4: "奴隷",
+                    5: "占い師",
+                    6: "労働者",
+                    7: "狩人",
+                    8: "傭兵",
+                    9: "兵士",
+                    10: "商人",
+                    11: "自然崇拝者",
+                    12: "族長"
+                  }
+              },
+        agileBeastman: {
+                  origin1: {
+                    2: "冒険者",
+                    3: "無頼",
+                    4: "奴隷",
+                    5: "占い師",
+                    6: "労働者",
+                    7: "狩人",
+                    8: "傭兵",
+                    9: "兵士",
+                    10: "商人",
+                    11: "自然崇拝者",
+                    12: "族長"
+                  }
+              },
+        sensoryBeastman: {
+                  origin1: {
+                    2: "冒険者",
+                    3: "無頼",
+                    4: "奴隷",
+                    5: "占い師",
+                    6: "労働者",
+                    7: "狩人",
+                    8: "傭兵",
+                    9: "兵士",
+                    10: "商人",
+                    11: "自然崇拝者",
+                    12: "族長"
+                  }
+                }
+              },
       // 経歴②・③は全種族共通
       commonOriginTable: {
         origin2: {
@@ -565,7 +610,7 @@ export default {
         Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1,
         Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1
       ];
-      
+
         // 経歴①は subRace が本来の種族になる
         const baseRace = this.subRace || this.race;
         const d = this.originDice[0]; // 1つ目の出目を使う
