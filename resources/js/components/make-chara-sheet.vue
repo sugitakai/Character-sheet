@@ -276,6 +276,8 @@ export default {
       return this.vitality * 2;
     },
 
+    vitality() { return CharacterCalculator.vitality(this); }
+    ,
     move() {
       const dice = this.assignedParameter.move || 0;
       const bonus = this.raceBonusTable[this.race]?.moveBonus || 1;
