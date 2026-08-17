@@ -202,12 +202,20 @@
 
 <script>
 import PhysicalFeatures from './PhysicalFeatures.vue';
+import { raceBonusTable } from '@/data/raceBonusTable';
+import { subRaceTable } from '@/data/subRaceTable';
+import { raceOriginTable, commonOriginTable } from '@/data/originTable';
+import { rollDice, rollOriginDice, rollParameterDice } from '@/services/DiceService';
 export default {
   components: {
     PhysicalFeatures
   },
   data() {
     return {
+      raceBonusTable,
+      subRaceTable,
+      raceOriginTable,
+      commonOriginTable,
       dice: Array(7).fill(1),// 出目（1〜3）
       abilities: {
         strength: 0,
@@ -220,50 +228,12 @@ export default {
       },
       race: '',
       subRace: '',
-      raceBonusTable: { 
-			  human: { strength: 1, spirit: 0, dexterity: 0, intellect: 1, concentration: 0, endurance: 2, reflex: 0 , moveBonus: 3 },
-			  dwarf: { strength: 2, spirit: 0, dexterity: 2, intellect: -1, concentration: 1, endurance: 1, reflex: -1 , moveBonus: 2 },
-			  elf: { strength: -1, spirit: 1, dexterity: 1, intellect: 1, concentration: 0, endurance: -1, reflex: 1 , moveBonus: 4 },
-			  lizardman: { strength: 2, spirit: 1, dexterity: 0, intellect: 0, concentration: 1, endurance: 0, reflex: 0 , moveBonus: 2 },
-			  halfling: { strength: -1, spirit: 2, dexterity: 1, intellect: 0, concentration: -1, endurance: 0, reflex: 2 , moveBonus: 3 },
-			  darkElf: { strength: 0, spirit: 2, dexterity: 1, intellect: 1, concentration: 0, endurance: -1,  reflex: 1 , moveBonus: 3 },         // 闇人（ダークエルフ）
-			  lycanthrope: { strength: 1, spirit: 0, dexterity: 1, intellect: 0, concentration: 0, endurance: 1, reflex: 0 , moveBonus: 3 },     // 獣憑き（ライカンスロープ）
-			  martialBeastman: { strength: 2, spirit: 0, dexterity: 1, intellect: 0, concentration: 1, endurance: 0, reflex: -1 , moveBonus: 3 }, // 格闘獣人
-			  bruteBeastman: { strength: 1, spirit: 1, dexterity: 0, intellect: 0, concentration: 1, endurance: 2, reflex: -1 , moveBonus: 2 },   // 剛力獣人
-			  agileBeastman: { strength: 1, spirit: -1, dexterity: 1, intellect: 0, concentration: 0, endurance: 0, reflex: 1 , moveBonus: 4 },   // 俊敏獣人
-			  sensoryBeastman: { strength: -1, spirit: 0, dexterity: 1, intellect: 1, concentration: 1, endurance: 0, reflex: 1 , moveBonus: 3 }  // 知覚獣人
-		  },
+
       bonusTarget: '',
       beginnerReliefTarget: '',
       bonusApplied: false,
       reliefApplied: false,
-      subRaceTable: {
-        "": {
-          label: "なし",
-          useRaceBonus: true,
-          useRaceOrigin: true
-        },
-        damphir: {
-          label: "ダンピール",
-          useRaceBonus: true,
-          useRaceOrigin: true
-        },
-        kruusnik: {
-          label: "クルースニク",
-          useRaceBonus: true,
-          useRaceOrigin: true
-        },
-        zduhachi: {
-          label: "ズドゥハチ",
-          useRaceBonus: true,
-          useRaceOrigin: true
-        },
-        lycanthrope: {
-          label: "獣憑き",
-          useRaceBonus: false,   // 独自補正を使う
-          useRaceOrigin: true    // 経歴①は本来の種族を使う
-        }
-      },
+
       originDice: [],
 
     // 割り振り先
@@ -281,187 +251,9 @@ export default {
       history1: "",
       history2: "",
       history3: "",
-      raceOriginTable: {
-        human: {
-          origin1: {
-            2: "冒険者",
-            3: "無頼",
-            4: "猟師",
-            5: "学者",
-            6: "職人",
-            7: "農民",
-            8: "商人",
-            9: "兵士",
-            10: "騎士",
-            11: "神官",
-            12: "貴族"
-          }
-        },
-        dwarf: {
-          origin1: {
-            2: "冒険者",
-            3: "無頼",
-            4: "猟師",
-            5: "商人",
-            6: "亭主",
-            7: "鍛冶師",
-            8: "職人",
-            9: "兵士",
-            10: "盾砕き",
-            11: "神官",
-            12: "貴族"
-          }
-        },
-        elf: {
-          origin1: {
-            2: "冒険者",
-            3: "無頼",
-            4: "半森人",
-            5: "細工師",
-            6: "兵士",
-            7: "猟師",
-            8: "詩人",
-            9: "楽師",
-            10: "語り部",
-            11: "祈祷師",
-            12: "族長"
-          }
-        },
-        lizardman: {
-          origin1: {
-            2: "冒険者",
-            3: "無頼",
-            4: "奴隷",
-            5: "騎兵",
-            6: "工兵",
-            7: "弓兵",
-            8: "槍兵",
-            9: "歩兵",
-            10: "軍師",
-            11: "司祭",
-            12: "王卵"
-          }
-        },
-        halfling: {
-          origin1: {
-            2: "冒険者",
-            3: "無頼",
-            4: "詩人",
-            5: "学者",
-            6: "職人",
-            7: "農民",
-            8: "商人",
-            9: "亭主",
-            10: "庭師",
-            11: "騎士",
-            12: "地主"
-          }
-        },
-        darkElf: {
-          origin1: {
-            2: "冒険者",
-            3: "異端者",
-            4: "犯罪者",
-            5: "密偵",
-            6: "商家",
-            7: "兵士",
-            8: "拷問吏",
-            9: "武人",
-            10: "神官",
-            11: "精霊使い",
-            12: "貴種"
-          }
-        },
-        martialBeastman: {
-          origin1: {
-            2: "冒険者",
-            3: "無頼",
-            4: "奴隷",
-            5: "占い師",
-            6: "労働者",
-            7: "狩人",
-            8: "傭兵",
-            9: "兵士",
-            10: "商人",
-            11: "自然崇拝者",
-            12: "族長"
-          }
-        },
-        bruteBeastman: {
-                  origin1: {
-                    2: "冒険者",
-                    3: "無頼",
-                    4: "奴隷",
-                    5: "占い師",
-                    6: "労働者",
-                    7: "狩人",
-                    8: "傭兵",
-                    9: "兵士",
-                    10: "商人",
-                    11: "自然崇拝者",
-                    12: "族長"
-                  }
-              },
-        agileBeastman: {
-                  origin1: {
-                    2: "冒険者",
-                    3: "無頼",
-                    4: "奴隷",
-                    5: "占い師",
-                    6: "労働者",
-                    7: "狩人",
-                    8: "傭兵",
-                    9: "兵士",
-                    10: "商人",
-                    11: "自然崇拝者",
-                    12: "族長"
-                  }
-              },
-        sensoryBeastman: {
-                  origin1: {
-                    2: "冒険者",
-                    3: "無頼",
-                    4: "奴隷",
-                    5: "占い師",
-                    6: "労働者",
-                    7: "狩人",
-                    8: "傭兵",
-                    9: "兵士",
-                    10: "商人",
-                    11: "自然崇拝者",
-                    12: "族長"
-                  }
-                }
-              },
+
       // 経歴②・③は全種族共通
-      commonOriginTable: {
-        origin2: {
-          2: "奴隷",
-          3: "牢獄",
-          4: "戦場",
-          5: "神殿",
-          6: "孤児",
-          7: "平穏",
-          8: "貧困",
-          9: "学校",
-          10: "箱入り",
-          11: "贅沢",
-          12: "宮廷"
-        },
-        origin3: {
-          2: "宿敵",
-          3: "上司",
-          4: "後輩",
-          5: "取引相手",
-          6: "部下",
-          7: "家族",
-          8: "親友",
-          9: "先輩",
-          10: "婚約者",
-          11: "好敵手",
-          12: "師匠"
-        }
-      },
+
       parameterDice: [], // 2d6 を3回振った結果
       assignedParameter: {
         vitality: null,
@@ -525,20 +317,42 @@ export default {
     }
   },
   methods: {
-      rollDice() {
-        const results = Array.from({ length: 7 }, () => Math.floor(Math.random() * 3) + 1);
-        this.dice = results;
+    rollDice() {
+      const results = rollDice();
 
-        const keys = Object.keys(this.abilities);
-        keys.forEach((key, index) => {
-          this.abilities[key] = results[index];
-        });
-      
-        // ★ 種族が選ばれているなら補正を再適用
-        if (this.race) {
-          this.applyRaceBonus();
-        }
+      this.dice = results;
+
+      const keys = Object.keys(this.abilities);
+
+      keys.forEach((key, index) => {
+        this.abilities[key] = results[index];
+      });
+
+      // 種族が選ばれているなら補正を再適用
+      if (this.race) {
+        this.applyRaceBonus();
+      }
     },
+
+    rollOriginDice() {
+        this.originDice = rollOriginDice();
+    
+        const baseRace = this.subRace || this.race;
+        const d = this.originDice[0];
+    
+        console.log("race =", this.race);
+        console.log("subRace =", this.subRace);
+        console.log("baseRace =", baseRace);
+        console.log("raceOriginTable =", this.raceOriginTable);
+    
+        this.origin1 = this.raceOriginTable[baseRace].origin1[d];
+        this.history1 = this.origin1;
+    },
+
+    rollParameterDice() {
+      this.parameterDice = rollParameterDice();
+    },
+
     totalAbility() {
         return Object.values(this.abilities).reduce((sum, val) => sum + val, 0);
       },
@@ -547,15 +361,7 @@ export default {
     },
     applyRaceBonus() {
         // 追加種族の仕様
-        const subRaceTable = {
-          "": { useRaceBonus: true },
-          damphir: { useRaceBonus: true },
-          kruusnik: { useRaceBonus: true },
-          zduhachi: { useRaceBonus: true },
-          lycanthrope: { useRaceBonus: false } // 独自補正を使う
-        };
-
-        const sub = subRaceTable[this.subRace];
+        const sub = this.subRaceTable[this.subRace];
 
         // 種族補正に使う種族を決定
         let bonusRace = this.race;
@@ -566,6 +372,7 @@ export default {
         }
     
         const bonus = this.raceBonusTable[bonusRace];
+
         if (!bonus) return;
         
         const keys = Object.keys(this.abilities);
@@ -613,30 +420,10 @@ export default {
     isAssigned(diceValue) {
       return Object.values(this.assignedParameter).includes(diceValue);
     },
-    rollOriginDice() {
-      this.originDice = [
-        Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1,
-        Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1,
-        Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1
-      ];
 
-        // 経歴①は subRace が本来の種族になる
-        const baseRace = this.subRace || this.race;
-        const d = this.originDice[0]; // 1つ目の出目を使う
-        this.origin1 = this.raceOriginTable[baseRace].origin1[d];
-        this.history1 = this.origin1;
-    },
     isOriginAssigned(d) {
       return Object.values(this.assignedOrigin).includes(d);
     },
-
-    rollParameterDice() {
-      this.parameterDice = [
-        Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1,
-        Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1,
-        Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1
-      ];
-    }
   }
 };
 </script>

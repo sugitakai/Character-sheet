@@ -1,4 +1,4 @@
-raceOriginTable: {
+ export const raceOriginTable =  {
 	human: {
 		origin1: {
 			2: "冒険者",
@@ -149,9 +149,9 @@ raceOriginTable: {
 													12: "族長"
 		}
 	}
-},
+}
 // 経歴②・③は全種族共通
-commonOriginTable: {
+export const commonOriginTable = {
 	origin2: {
 		2: "奴隷",
 			3: "牢獄",
@@ -178,4 +178,4 @@ commonOriginTable: {
 											11: "好敵手",
 												12: "師匠"
 	}
-},
+}

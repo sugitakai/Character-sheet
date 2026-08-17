@@ -1,4 +1,4 @@
-subRaceTable: {
+export const subRaceTable =  {
 	"": {
 		label: "なし",
 			useRaceBonus: true,
@@ -24,4 +24,4 @@ subRaceTable: {
 			useRaceBonus: false,   // 独自補正を使う
 				useRaceOrigin: true    // 経歴①は本来の種族を使う
 	}
-},
+}
