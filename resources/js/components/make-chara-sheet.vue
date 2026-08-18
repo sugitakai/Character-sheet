@@ -206,6 +206,13 @@ import { raceBonusTable } from '@/data/raceBonusTable';
 import { subRaceTable } from '@/data/subRaceTable';
 import { raceOriginTable, commonOriginTable } from '@/data/originTable';
 import { rollDice, rollOriginDice, rollParameterDice } from '@/services/DiceService';
+import {
+  calculateVitality,
+  calculateVitality2,
+  calculateMove,
+  calculateSpellUses,
+  calculateResistBase
+} from '@/rules/CharacterCalculator';
 export default {
   components: {
     PhysicalFeatures
@@ -265,38 +272,41 @@ export default {
       skillBonus: 0   // 
     };
   },
-  computed: {
-    vitality() {
-      const base = this.abilities.strength + this.abilities.spirit + this.abilities.endurance;
-      const dice = this.assignedParameter.vitality || 0;
-      return base + dice;
-    },
-
-    vitality2() {
-      return this.vitality * 2;
-    },
-
-    vitality() { return CharacterCalculator.vitality(this); }
-    ,
-    move() {
-      const dice = this.assignedParameter.move || 0;
-      const bonus = this.raceBonusTable[this.race]?.moveBonus || 1;
-      return dice * bonus;
-    },
-
-    spellUses() {
-      const dice = this.assignedParameter.spell || 0;
-      let base = 0;
-      if (dice <= 6) base = 0;
-      else if (dice <= 9) base = 1;
-      else if (dice <= 11) base = 2;
-      else base = 3;
-      return base + this.spellSkillBonus;
-    },
-    resistBase() {
-      return this.abilities.spirit + this.abilities.reflex + this.adventurerLevel + this.skillBonus;
-    }
+computed: {
+  vitality() {
+    return calculateVitality(
+      this.abilities,
+      this.assignedParameter
+    );
   },
+
+  vitality2() {
+    return calculateVitality2(this.vitality);
+  },
+
+  move() {
+    return calculateMove(
+      this.assignedParameter,
+      this.raceBonusTable,
+      this.race
+    );
+  },
+
+  spellUses() {
+    return calculateSpellUses(
+      this.assignedParameter,
+      this.spellSkillBonus
+    );
+  },
+
+  resistBase() {
+    return calculateResistBase(
+      this.abilities,
+      this.adventurerLevel,
+      this.skillBonus
+    );
+  }
+},
     watch: {
       'assignedOrigin.origin1'(val) {
       if (val) {
