@@ -1,1 +1,3 @@
+/database/seeders/RealDataSeeder.php
+/database/data/goblin_slayer.json
 *.sqlite*
