@@ -196,6 +196,528 @@
           {{ d }}
         </option>
       </select>
+          <section class="sheet-section">
+
+      <h2>◆冒険者技能</h2>
+
+      <table class="skill-table">
+
+        <thead>
+          <tr>
+            <th>技能名</th>
+            <th>初歩</th>
+            <th>習熟</th>
+            <th>熟達</th>
+            <th>達人</th>
+            <th>伝説</th>
+            <th>効果</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr v-for="n in 9" :key="'adventure-skill-' + n">
+
+            <td>
+              <input
+                type="text"
+                placeholder="技能名"
+              >
+            </td>
+
+            <td><input type="checkbox"></td>
+            <td><input type="checkbox"></td>
+            <td><input type="checkbox"></td>
+            <td><input type="checkbox"></td>
+            <td><input type="checkbox"></td>
+
+            <td>
+              <input
+                type="text"
+                placeholder="効果"
+              >
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </section>
+
+
+    <!-- ==================================================
+         ◆ 一般技能
+    ================================================== -->
+    <section class="sheet-section">
+
+      <h2>◆一般技能</h2>
+
+      <table class="skill-table">
+
+        <thead>
+          <tr>
+            <th>技能名</th>
+            <th>初歩</th>
+            <th>習熟</th>
+            <th>熟達</th>
+            <th>効果</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr v-for="n in 10" :key="'general-skill-' + n">
+
+            <td>
+              <input
+                type="text"
+                placeholder="技能名"
+              >
+            </td>
+
+            <td><input type="checkbox"></td>
+            <td><input type="checkbox"></td>
+            <td><input type="checkbox"></td>
+
+            <td>
+              <input
+                type="text"
+                placeholder="効果"
+              >
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </section>
+
+
+    <!-- ==================================================
+         ◆ 呪文
+    ================================================== -->
+    <section class="sheet-section">
+
+      <h2>◆呪文</h2>
+
+      <p>
+        呪文行使基本値
+        （知力集中or魂魄集中+技能補正）：
+        <strong>【 {{ spellCastBase }} 】</strong>
+      </p>
+
+      <p>
+        呪文維持基本値
+        （知力持久or魂魄持久+技能補正）：
+        <strong>【 {{ spellMaintainBase }} 】</strong>
+      </p>
+
+      <p>
+        呪文LV：
+        真言【 {{ spellLevels.word }} 】
+        死霊【 {{ spellLevels.necromancy }} 】
+        奇跡【 {{ spellLevels.miracle }} 】
+        祖竜【 {{ spellLevels.ancientDragon }} 】
+        精霊【 {{ spellLevels.spirit }} 】
+      </p>
+
+      <h3>●習得呪文</h3>
+
+      <div
+        v-for="n in 3"
+        :key="'spell-' + n"
+        class="entry-row"
+      >
+        <input
+          type="text"
+          placeholder="呪文名（読み）"
+        >
+
+        <span>：</span>
+
+        <input
+          type="text"
+          placeholder="参照P"
+          class="page-input"
+        >
+      </div>
+
+
+      <h3>●習得武技</h3>
+
+      <div
+        v-for="n in 6"
+        :key="'martial-' + n"
+        class="entry-row"
+      >
+        <input
+          type="text"
+          placeholder="武技名（読み）"
+        >
+
+        <span>：</span>
+
+        <input
+          type="text"
+          placeholder="参照P"
+          class="page-input"
+        >
+      </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         ◆ 攻撃
+    ================================================== -->
+    <section class="sheet-section">
+
+      <h2>◆攻撃</h2>
+
+      <p>
+        命中基準値（技量集中）：
+        <strong>【 {{ attackBase }} 】</strong>
+      </p>
+
+      <p>
+        職業修正
+        近接：【 {{ jobMelee }} 】
+        弩弓：【 {{ jobCrossbow }} 】
+        投擲：【 {{ jobThrow }} 】
+      </p>
+
+      <p>
+        技能修正
+        近接：【 {{ skillMelee }} 】
+        弩弓：【 {{ skillCrossbow }} 】
+        投擲：【 {{ skillThrow }} 】
+      </p>
+
+
+      <h3>●武器</h3>
+
+      <div
+        v-for="n in 3"
+        :key="'weapon-' + n"
+        class="equipment-box"
+      >
+
+        <input
+          type="text"
+          placeholder="道具名（読み）"
+          class="equipment-name"
+        >
+
+        <p>
+          用途／属性／射程：
+          <input type="text">
+          ／
+          <input type="text">
+          ／
+          <input type="text">
+        </p>
+
+        <p>
+          命中修正：
+          <input type="number" value="0">
+
+          命中値：
+          <strong>--</strong>
+        </p>
+
+        <p>
+          基本ダメージ：
+          <input type="text">
+
+          ／職業修正：
+          <input type="number" value="0">
+        </p>
+
+        <p>
+          合計ダメージ：
+          <strong>--</strong>
+        </p>
+
+        <p>
+          効果：
+          <input type="text">
+
+          ／参照P：
+          <input type="text" class="page-input">
+        </p>
+
+      </div>
+
+
+      <h3>●効力値</h3>
+
+      <p>
+        0〜14：変化無し　
+        15〜19：+1D6　
+        20〜24：+2D6　
+        25〜29：+3D6　
+        30〜39：+4D6　
+        40〜：+5D6
+      </p>
+
+    </section>
+
+
+    <!-- ==================================================
+         ◆ 防御
+    ================================================== -->
+    <section class="sheet-section">
+
+      <h2>◆防御</h2>
+
+      <p>
+        回避基準値：
+        <strong>【 {{ evadeBase }} 】</strong>
+      </p>
+
+      <p>
+        盾受け基準値：
+        <strong>【 {{ shieldBase }} 】</strong>
+      </p>
+
+      <p>
+        隠密基準値：
+        <strong>【 {{ stealthBase }} 】</strong>
+      </p>
+
+
+      <h3>●鎧</h3>
+
+      <div class="equipment-box">
+
+        <input
+          type="text"
+          placeholder="道具名（読み）"
+          class="equipment-name"
+        >
+
+        <p>
+          属性：
+          <input type="text">
+
+          装甲値：
+          <input type="number" value="0">
+        </p>
+
+        <p>
+          回避値補正：
+          <input type="number" value="0">
+
+          移動力修正：
+          <input type="number" value="0">
+        </p>
+
+        <p>
+          隠密性：
+          <input type="text">
+          ／
+          <input type="number" value="0">
+        </p>
+
+        <p>
+          技能修正：
+          <input type="number" value="0">
+        </p>
+
+        <p>
+          効果：
+          <input type="text">
+
+          ／参照P：
+          <input type="text" class="page-input">
+        </p>
+
+      </div>
+
+
+      <h3>●盾</h3>
+
+      <div class="equipment-box">
+
+        <input
+          type="text"
+          placeholder="道具名（読み）"
+          class="equipment-name"
+        >
+
+        <p>
+          属性：
+          <input type="text">
+
+          盾受け修正：
+          <input type="number" value="0">
+        </p>
+
+        <p>
+          盾受け値：
+          <strong>--</strong>
+        </p>
+
+        <p>
+          隠密性：
+          <input type="text">
+          ／
+          <input type="number" value="0">
+        </p>
+
+        <p>
+          技能修正：
+          <input type="number" value="0">
+        </p>
+
+        <p>
+          効果：
+          <input type="text">
+
+          ／参照P：
+          <input type="text" class="page-input">
+        </p>
+
+      </div>
+
+
+      <p>
+        所持品移動力修正合計：
+        <strong>【 {{ itemMovePenalty }} 】</strong>
+      </p>
+
+      <div class="defense-total">
+
+        <p>
+          移動力合計：
+          <strong>【 {{ moveTotal }} 】</strong>
+        </p>
+
+        <p>
+          回避値合計：
+          <strong>【 {{ evadeTotal }} 】</strong>
+        </p>
+
+        <p>
+          隠密性合計：
+          <strong>【 {{ stealthTotal }} 】</strong>
+        </p>
+
+        <p>
+          装甲値合計：
+          <strong>【 {{ armorTotal }} 】</strong>
+        </p>
+
+        <p>
+          盾受け基準値合計：
+          <strong>【 {{ shieldTotal }} 】</strong>
+        </p>
+
+        <p>
+          装甲値+盾受け値合計：
+          <strong>【 {{ armorShieldTotal }} 】</strong>
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         ◆ 移動妨害
+    ================================================== -->
+    <section class="sheet-section">
+
+      <h2>◆移動妨害</h2>
+
+      <p>
+        体力反射：
+        <strong>【 {{ movementStrengthReflex }} 】</strong>
+
+        戦士：
+        <strong>【 {{ movementWarrior }} 】</strong>
+
+        修正：
+        <strong>【 {{ movementModifier }} 】</strong>
+      </p>
+
+      <p>
+        基準値：
+        <strong>【 {{ movementBase }} 】</strong>
+      </p>
+
+      <p>
+        移動妨害への抵抗
+        体力or技量集中：
+        <strong>【 {{ movementResistAbility }} 】</strong>
+      </p>
+
+      <p>
+        戦士or武道家or斥候：
+        <strong>【 {{ movementResistJob }} 】</strong>
+      </p>
+
+      <p>
+        基準値：
+        <strong>【 {{ movementResistBase }} 】</strong>
+      </p>
+
+    </section>
+
+
+    <!-- ==================================================
+         ◆ 所持品
+    ================================================== -->
+    <section class="sheet-section">
+
+      <h2>◆所持金</h2>
+
+      <p>
+        銀貨：
+        <input
+          type="number"
+          v-model="money"
+        >
+        枚
+      </p>
+
+
+      <h3>●所持品</h3>
+
+      <div class="inventory-grid">
+
+        <div
+          v-for="n in 18"
+          :key="'item-' + n"
+        >
+          <input
+            type="text"
+            placeholder="所持品"
+          >
+
+          <input
+            type="text"
+            placeholder="参照P"
+            class="page-input"
+          >
+        </div>
+
+      </div>
+
+
+      <h3>●その他の所持品</h3>
+
+      <textarea
+        v-model="otherItems"
+        rows="5"
+        placeholder="その他の所持品"
+      ></textarea>
+
+    </section>
     </section>
   </div>
 </template>
@@ -269,7 +791,51 @@ export default {
       },
       adventurerLevel: 1,
       spellSkillBonus: 0,
-      skillBonus: 0   // 
+      money: 100,
+      otherItems: '',
+
+      spellLevels: {
+        word: 0,
+        necromancy: 0,
+        miracle: 0,
+        ancientDragon: 0,
+        spirit: 0
+      },
+      skillBonus: 0 ,  // 
+      spellCastBase: 0,
+      spellMaintainBase: 0,
+
+      attackBase: 0,
+
+      jobMelee: 0,
+      jobCrossbow: 0,
+      jobThrow: 0,
+
+      skillMelee: 0,
+      skillCrossbow: 0,
+      skillThrow: 0,
+
+      evadeBase: 0,
+      shieldBase: 0,
+      stealthBase: 0,
+
+      itemMovePenalty: 0,
+
+      moveTotal: 0,
+      evadeTotal: 0,
+      stealthTotal: 0,
+      armorTotal: 0,
+      shieldTotal: 0,
+      armorShieldTotal: 0,
+
+      movementStrengthReflex: 0,
+      movementWarrior: 0,
+      movementModifier: 0,
+      movementBase: 0,
+
+      movementResistAbility: 0,
+      movementResistJob: 0,
+      movementResistBase: 0,
     };
   },
 computed: {
