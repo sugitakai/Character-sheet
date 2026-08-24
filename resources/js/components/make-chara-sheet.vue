@@ -105,34 +105,38 @@
       <p>能力値合計：{{ totalAbility() }}</p>
       <h3>◆能力値マトリクス</h3>
       <table class="matrix-table">
-        <tr>
-          <th>能力</th>
-          <th>体力{{ abilities.strength }}</th>
-          <th>魂魄{{ abilities.spirit }}</th>
-          <th>技量{{ abilities.dexterity }}</th>
-          <th>知力{{ abilities.intellect }}</th>
-        </tr>
-        <tr>
-          <td>集中度{{ abilities.concentration }}</td>
-          <td>{{ abilities.strength + abilities.concentration }}</td>
-          <td>{{ abilities.spirit + abilities.concentration }}</td>
-          <td>{{ abilities.dexterity + abilities.concentration }}</td>
-          <td>{{ abilities.intellect + abilities.concentration }}</td>
-        </tr>
-        <tr>
-          <td>持久度{{ abilities.endurance }}</td>
-          <td>{{ abilities.strength + abilities.endurance }}</td>
-          <td>{{ abilities.spirit + abilities.endurance }}</td>
-          <td>{{ abilities.dexterity + abilities.endurance }}</td>
-          <td>{{ abilities.intellect + abilities.endurance }}</td>
-        </tr>
-        <tr>
-          <td>反射度{{ abilities.reflex }}</td>
-          <td>{{ abilities.strength + abilities.reflex }}</td>
-          <td>{{ abilities.spirit + abilities.reflex }}</td>
-          <td>{{ abilities.dexterity + abilities.reflex }}</td>
-          <td>{{ abilities.intellect + abilities.reflex }}</td>
-        </tr>
+        <thead>
+          <tr>
+            <th>能力値</th>
+            <th>体力点{{ abilities.strength }}</th>
+            <th>魂魄点{{ abilities.spirit }}</th>
+            <th>技量点{{ abilities.dexterity }}</th>
+            <th>知力点{{ abilities.intellect }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>集中度{{ abilities.concentration }}</td>
+            <td>{{ abilities.strength + abilities.concentration }}</td>
+            <td>{{ abilities.spirit + abilities.concentration }}</td>
+            <td>{{ abilities.dexterity + abilities.concentration }}</td>
+            <td>{{ abilities.intellect + abilities.concentration }}</td>
+          </tr>
+          <tr>
+            <td>持久度{{ abilities.endurance }}</td>
+            <td>{{ abilities.strength + abilities.endurance }}</td>
+            <td>{{ abilities.spirit + abilities.endurance }}</td>
+            <td>{{ abilities.dexterity + abilities.endurance }}</td>
+            <td>{{ abilities.intellect + abilities.endurance }}</td>
+          </tr>
+          <tr>
+            <td>反射度{{ abilities.reflex }}</td>
+            <td>{{ abilities.strength + abilities.reflex }}</td>
+            <td>{{ abilities.spirit + abilities.reflex }}</td>
+            <td>{{ abilities.dexterity + abilities.reflex }}</td>
+            <td>{{ abilities.intellect + abilities.reflex }}</td>
+          </tr>
+        </tbody>
       </table>
 
       <div v-if="isBeginnerReliefAvailable()">
