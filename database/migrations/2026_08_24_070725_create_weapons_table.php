@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('range', 50)->nullable();
             $table->integer('hit_modifier')->nullable();
             $table->integer('base_damage')->nullable();
-            $table->integer('skill_modifier')->nullable();
+            $table->integer('job_modifier')->nullable();
             $table->string('effect', 255)->nullable();
             $table->string('reference_page', 20)->nullable();
             $table->timestamps();
