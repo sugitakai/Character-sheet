@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\Relations\HasMany;
 class Skill extends Model
 {
     protected $fillable = [
@@ -12,4 +12,8 @@ class Skill extends Model
     'prerequisite',
     'description'
     ];
+    public function levels(): HasMany
+    {
+        return $this->hasMany(SkillLevel::class);
+    }
 }

@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('usage', 50)->nullable();
             $table->string('range', 50)->nullable();
             $table->integer('hit_modifier')->nullable();
-            $table->integer('base_damage')->nullable();
+            $table->string('base_damage', 50)->nullable();
             $table->integer('job_modifier')->nullable();
             $table->string('effect', 255)->nullable();
             $table->string('reference_page', 20)->nullable();
