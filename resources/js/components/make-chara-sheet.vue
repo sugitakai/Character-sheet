@@ -484,6 +484,11 @@
       </p>
 
       <p>
+        受流し基準値：(対応装備時限定)
+        <strong>【 {{ parryBase }} 】</strong>
+      </p>
+
+      <p>
         盾受け基準値：
         <strong>【 {{ shieldBase }} 】</strong>
       </p>
