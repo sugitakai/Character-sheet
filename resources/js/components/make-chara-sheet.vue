@@ -1034,6 +1034,7 @@ export default {
       skillThrow: 0,
 
       evadeBase: 0,
+      parryBase: 0,
       shieldBase: 0,
       stealthBase: 0,
 
