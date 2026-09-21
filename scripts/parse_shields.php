@@ -1,6 +1,6 @@
 <?php
 
-$lines = file('shields.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+$lines = file('database\data\盾.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 $output = [];
 
 for ($i = 0; $i < count($lines); $i += 3) {
